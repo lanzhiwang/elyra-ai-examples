@@ -16,10 +16,13 @@ limitations under the License.
 {% endcomment %}
 -->
 ## Run pipelines on Kubeflow Pipelines
+在 Kubeflow Pipelines 上运行管道
 
 A [pipeline](https://elyra.readthedocs.io/en/stable/user_guide/pipelines.html) comprises one or more nodes that are (in many cases) connected to define execution dependencies. Each node is implemented by a [component](https://elyra.readthedocs.io/en/stable/user_guide/pipeline-components.html) and typically performs only a single task, such as loading data, processing data, training a model, or sending an email.
+管道由一个或多个节点组成，这些节点（在许多情况下）连接起来以定义执行依赖性。每个节点由一个组件实现，通常仅执行一项任务，例如加载数据、处理数据、训练模型或发送电子邮件。
 
 A _generic pipeline_ comprises nodes that are implemented using _generic components_. Elyra includes generic components that run Jupyter notebooks, Python scripts, and R scripts. Generic components have in common that they are supported in every Elyra pipelines runtime environment: local/JupyterLab, Kubeflow Pipelines, and Apache Airflow.
+通用管道包含使用通用组件实现的节点。 Elyra 包括运行 Jupyter 笔记本、Python 脚本和 R 脚本的通用组件。通用组件的共同点是它们在每个 Elyra pipelines 运行时环境中都受支持：local/JupyterLab、Kubeflow Pipelines 和 Apache Airflow。
 
 The following tutorials cover generic pipelines:
 - [Introduction to generic pipelines](../introduction-to-generic-pipelines)
@@ -27,21 +30,29 @@ The following tutorials cover generic pipelines:
 - [Run generic pipelines on Apache Airflow](../run-generic-pipelines-on-apache-airflow)
 
 A _runtime specific_ pipeline comprises nodes that are implemented using generic components or _custom components_. Custom components are runtime specific and user-provided.
+运行时特定管道包含使用通用组件或自定义组件实现的节点。自定义组件是运行时特定的并且由用户提供。
 
 In this intermediate tutorial you will learn how to add [Kubeflow Pipelines components](https://www.kubeflow.org/docs/components/pipelines/sdk/component-development/) to Elyra and how to utilize them in pipelines.
+在本中级教程中，您将学习如何将 Kubeflow Pipelines 组件添加到 Elyra 以及如何在管道中使用它们。
 
 ![The completed tutorial pipeline](doc/images/completed-tutorial-pipeline.png)
 
 The features described in this tutorial require Elyra v3.3 or later. The tutorial instructions were last updated using Elyra v3.3.0 and Kubeflow v1.4.1.
+本教程中描述的功能需要 Elyra v3.3 或更高版本。本教程说明最后使用 Elyra v3.3.0 和 Kubeflow v1.4.1 进行更新。
 
 > Elyra does not support [Kubeflow Pipelines Python function-based components](https://www.kubeflow.org/docs/components/pipelines/sdk/python-function-components/).
+> Elyra 不支持 Kubeflow Pipelines 基于 Python 函数的组件。
 
 ### Prerequisites
 
 - [JupyterLab 3.x with the Elyra extension v3.3 (or later) installed](https://elyra.readthedocs.io/en/stable/getting_started/installation.html).
+  安装了 Elyra 扩展 v3.3（或更高版本）的 JupyterLab 3.x。
+
 - Access to a [local](https://elyra.readthedocs.io/en/stable/recipes/deploying-kubeflow-locally-for-dev.html) or [cloud](https://www.kubeflow.org/docs/started/installing-kubeflow/) Kubeflow Pipelines deployment.
+  访问本地或云 Kubeflow Pipelines 部署。
 
 Some familiarity with Kubeflow Pipelines and Kubeflow Pipelines components is required to complete the tutorial. If you are new to Elyra, please review the [_Run generic pipelines on Kubeflow Pipelines_](../run-generic-pipelines-on-kubeflow-pipelines) tutorial. It introduces concepts and tasks that are used in this tutorial, but not explained here to avoid content duplication.
+完成本教程需要熟悉 Kubeflow Pipelines 和 Kubeflow Pipelines 组件。如果您是 Elyra 新手，请查看在 Kubeflow Pipelines 上运行通用管道教程。它介绍了本教程中使用的概念和任务，但此处未进行解释，以避免内容重复
 
 #### Information to collect before starting
 
@@ -53,6 +64,7 @@ Collect the following information for your Kubeflow Pipelines installation:
 - Workflow engine type, which should be `Argo` or `Tekton`. Contact your administrator if you are unsure which engine your deployment utilizes.
 
 Elyra utilizes S3-compatible cloud storage to make data available to notebooks and scripts while they are executed. Any kind of S3-based cloud storage should work (e.g. IBM Cloud Object Storage or Minio) as long as it can be accessed from the machine where JupyterLab/Elyra is running and from the Kubeflow Pipelines cluster. 
+Elyra 利用与 S3 兼容的云存储，使数据在笔记本和脚本执行时可用。任何类型的基于 S3 的云存储都应该可以工作（例如 IBM Cloud Object Storage 或 Minio），只要可以从运行 JupyterLab/Elyra 的计算机和 Kubeflow Pipelines 集群进行访问即可。
 
 Collect the following information:
 - S3 compatible object storage endpoint, e.g. `http://minio-service.kubernetes:9000`
@@ -65,6 +77,7 @@ Collect the following information:
 #### Create a runtime configuration
 
 Create a runtime environment configuration for your Kubeflow Pipelines installation as described in [_Runtime configuration_ topic in the User Guide](https://elyra.readthedocs.io/en/stable/user_guide/runtime-conf.html) or the [_Run generic pipelines on Kubeflow Pipelines_ tutorial](https://github.com/elyra-ai/examples/tree/main/pipelines/run-generic-pipelines-on-kubeflow-pipelines#define-a-runtime-environment-configuration).
+按照用户指南中的运行时配置主题或在 Kubeflow Pipelines 教程中运行通用管道中所述，为 Kubeflow Pipelines 安装创建运行时环境配置。
 
 #### Clone the tutorial artifacts
 This tutorial uses the `run-pipelines-on-kubeflow-pipelines` sample from the https://github.com/elyra-ai/examples GitHub repository.
